@@ -16,7 +16,7 @@ class _NoteHomeScreenState extends State<NoteHomeScreen> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   NoteScreenController noteController = NoteScreenController();
-  int selectedIndex = 0;
+  int? selectedIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +33,7 @@ class _NoteHomeScreenState extends State<NoteHomeScreen> {
                 listTitle: noteController.notes[index].title,
                 listDescription: noteController.notes[index].description,
                 listDate: noteController.notes[index].date,
+                listColorIndex: noteController.notes[index].color,
                 onDeletePressed: () {
                   noteController.deleteNotes(index);
                   setState(() {});
@@ -121,11 +122,22 @@ class _NoteHomeScreenState extends State<NoteHomeScreen> {
                     itemBuilder: (context, index) => Padding(
                       padding: const EdgeInsets.only(left: 8.0),
                       child: InkWell(
-                        onTap: (){},
+                        onTap: () {
+                          setState(() {
+                            selectedIndex = index;
+                          });
+                        },
                         child: Container(
                           height: 20,
                           width: 30,
-                          color: mycolorList[index],
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 4,
+                                color: selectedIndex == index
+                                    ? Colors.black
+                                    : Colors.transparent),
+                            color: mycolorList[index],
+                          ),
                         ),
                       ),
                     ),
@@ -155,7 +167,9 @@ class _NoteHomeScreenState extends State<NoteHomeScreen> {
                         noteController.addNotes(NoteModel(
                             title: titleController.text,
                             description: descriptionController.text,
-                            date: dateController.text));
+                            date: dateController.text,
+                            color: selectedIndex ?? 0
+                          ));
                         setState(() {});
                         Navigator.pop(context);
                       },

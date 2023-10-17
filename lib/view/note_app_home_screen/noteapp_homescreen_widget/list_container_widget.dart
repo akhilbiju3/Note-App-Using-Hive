@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:noteapphive/controller/note_screen_controller/note_screen_controller.dart';
+import 'package:noteapphive/utils/color_constants/colors.dart';
 
 class ListContainer extends StatefulWidget {
   final String? listTitle;
@@ -12,14 +12,14 @@ class ListContainer extends StatefulWidget {
       required this.listTitle,
       required this.listDescription,
       required this.listDate,
-      this.listColorIndex = 0, this.onDeletePressed});
+      this.listColorIndex = 0,
+      this.onDeletePressed});
 
   @override
   State<ListContainer> createState() => _ListContainerState();
 }
 
 class _ListContainerState extends State<ListContainer> {
- 
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,7 +27,7 @@ class _ListContainerState extends State<ListContainer> {
       height: 200,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
-        color: const Color.fromARGB(255, 164, 176, 248),
+        color: mycolorList[widget.listColorIndex],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
