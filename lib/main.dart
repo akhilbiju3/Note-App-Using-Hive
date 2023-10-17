@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:noteapphive/view/note_app_home_screen/noteapp_homescreen.dart';
 
-void main() {
+Future<void> main() async {
+  var box = await Hive.openBox('NoteAppDB');
   runApp(const NoteApp());
 }
 

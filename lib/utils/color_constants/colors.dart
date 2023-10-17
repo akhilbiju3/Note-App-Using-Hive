@@ -21,3 +21,5 @@ List<Color> mycolorList = [
   Colors.grey,
   Colors.blueGrey,
 ];
+
+Color backgroundColor = Color(0xfff252525);

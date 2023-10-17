@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:noteapphive/controller/note_screen_controller/note_screen_controller.dart';
 import 'package:noteapphive/model/note_model_class/note_model_class.dart';
 import 'package:noteapphive/utils/color_constants/colors.dart';
+import 'package:noteapphive/view/note_app_details_screen/detailsscreen.dart';
 import 'package:noteapphive/view/note_app_home_screen/noteapp_homescreen_widget/list_container_widget.dart';
 
 class NoteHomeScreen extends StatefulWidget {
@@ -21,32 +22,45 @@ class _NoteHomeScreenState extends State<NoteHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Note App'),
-        backgroundColor: Colors.indigo,
+        backgroundColor: backgroundColor,
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView.separated(
-            itemBuilder: (context, index) => ListContainer(
-                listTitle: noteController.notes[index].title,
-                listDescription: noteController.notes[index].description,
-                listDate: noteController.notes[index].date,
-                listColorIndex: noteController.notes[index].color,
-                onDeletePressed: () {
-                  noteController.deleteNotes(index);
-                  setState(() {});
-                }),
+            itemBuilder: (context, index) => InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => DetailsScreen(
+                            detailsTitle: titleController.text,
+                            detailsDescription: descriptionController.text,
+                            detailsDate: dateController.text)));
+                  },
+                  child: ListContainer(
+                      listTitle: noteController.notes[index].title,
+                      listDescription: noteController.notes[index].description,
+                      listDate: noteController.notes[index].date,
+                      listColorIndex: noteController.notes[index].color,
+                      onDeletePressed: () {
+                        noteController.deleteNotes(index);
+                        setState(() {});
+                      }),
+                ),
             separatorBuilder: (context, index) => Divider(),
             itemCount: noteController.notes.length),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.blueGrey,
         onPressed: () {
           BottomSheet(context);
         },
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Colors.black,
+        ),
       ),
     );
   }
@@ -168,8 +182,7 @@ class _NoteHomeScreenState extends State<NoteHomeScreen> {
                             title: titleController.text,
                             description: descriptionController.text,
                             date: dateController.text,
-                            color: selectedIndex ?? 0
-                          ));
+                            color: selectedIndex ?? 0));
                         setState(() {});
                         Navigator.pop(context);
                       },

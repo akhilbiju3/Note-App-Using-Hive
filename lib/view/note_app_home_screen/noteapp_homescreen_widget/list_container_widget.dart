@@ -24,7 +24,7 @@ class _ListContainerState extends State<ListContainer> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(30),
-      height: 200,
+      height: 180,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
         color: mycolorList[widget.listColorIndex],
