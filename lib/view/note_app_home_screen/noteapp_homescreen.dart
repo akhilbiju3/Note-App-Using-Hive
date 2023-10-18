@@ -24,11 +24,16 @@ class _NoteHomeScreenState extends State<NoteHomeScreen> {
     await noteController.loadDatabase();
   }
 
+  // TextEditingController for the title,description and date
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController dateController = TextEditingController();
+
+  //object creation for the note screen controller class
   NoteScreenController noteController = NoteScreenController();
-  int? selectedIndex;
+  
+  //set initial idex of color as zero
+   int? selectedIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +65,7 @@ class _NoteHomeScreenState extends State<NoteHomeScreen> {
                       onDeletePressed: () {
                         noteController.deleteNotes(index);
                         setState(() {});
-                      }),
+                      }, shareText: noteController.notes[index].title,),
                 ),
             separatorBuilder: (context, index) => Divider(),
             itemCount: noteController.notes.length),
@@ -93,6 +98,7 @@ class _NoteHomeScreenState extends State<NoteHomeScreen> {
                     padding: EdgeInsets.only(
                         bottom: MediaQuery.of(context).viewInsets.bottom),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(top: 15.0),

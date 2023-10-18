@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:noteapphive/controller/note_screen_controller/note_screen_controller.dart';
 import 'package:noteapphive/utils/color_constants/colors.dart';
 
 class ListContainer extends StatefulWidget {
@@ -6,6 +7,7 @@ class ListContainer extends StatefulWidget {
   final String? listDescription;
   final String? listDate;
   final int listColorIndex;
+  final String shareText;
   final void Function()? onDeletePressed;
   const ListContainer(
       {super.key,
@@ -13,13 +15,15 @@ class ListContainer extends StatefulWidget {
       required this.listDescription,
       required this.listDate,
       this.listColorIndex = 0,
-      this.onDeletePressed});
+      this.onDeletePressed,
+      required this.shareText});
 
   @override
   State<ListContainer> createState() => _ListContainerState();
 }
 
 class _ListContainerState extends State<ListContainer> {
+  NoteScreenController noteController = NoteScreenController();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -47,6 +51,12 @@ class _ListContainerState extends State<ListContainer> {
               ),
               Row(
                 children: [
+                  IconButton(
+                    icon: Icon(Icons.share, size: 30),
+                    onPressed: () {
+                      noteController.shareNotes(widget.shareText);
+                    },
+                  ),
                   IconButton(
                     icon: Icon(Icons.delete, size: 30),
                     onPressed: widget.onDeletePressed,
