@@ -13,6 +13,17 @@ class NoteHomeScreen extends StatefulWidget {
 }
 
 class _NoteHomeScreenState extends State<NoteHomeScreen> {
+  @override
+  void initState() {
+    loadDatabaseData();
+    super.initState();
+  }
+
+  loadDatabaseData() async {
+    NoteScreenController noteController = NoteScreenController();
+    await noteController.loadDatabase();
+  }
+
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController dateController = TextEditingController();
@@ -22,6 +33,7 @@ class _NoteHomeScreenState extends State<NoteHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: backgroundColor,
       appBar: AppBar(
         centerTitle: true,
@@ -43,7 +55,8 @@ class _NoteHomeScreenState extends State<NoteHomeScreen> {
                       listTitle: noteController.notes[index].title,
                       listDescription: noteController.notes[index].description,
                       listDate: noteController.notes[index].date,
-                      listColorIndex: noteController.notes[index].color,
+                      listColorIndex:
+                          noteController.notes[index].selectedColor!,
                       onDeletePressed: () {
                         noteController.deleteNotes(index);
                         setState(() {});
@@ -67,132 +80,133 @@ class _NoteHomeScreenState extends State<NoteHomeScreen> {
 
   Future<dynamic> BottomSheet(BuildContext context) {
     return showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-          height: 600,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 15.0),
+        isScrollControlled: true,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, floatSetState) {
+              return Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: SingleChildScrollView(
                   child: Container(
-                    width: double.infinity,
-                    child: TextField(
-                      controller: titleController,
-                      decoration: InputDecoration(
-                          labelText: 'Title',
-                          disabledBorder: InputBorder.none,
-                          contentPadding: EdgeInsets.all(10),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          )),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Container(
-                  height: 100,
-                  width: double.infinity,
-                  child: TextField(
-                    controller: descriptionController,
-                    maxLines: 5,
-                    decoration: InputDecoration(
-                        labelText: 'Description',
-                        disabledBorder: InputBorder.none,
-                        contentPadding: EdgeInsets.all(10),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        )),
-                  ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Container(
-                  width: double.infinity,
-                  child: TextField(
-                    controller: dateController,
-                    decoration: InputDecoration(
-                        hintText: 'Date',
-                        labelText: 'Date',
-                        disabledBorder: InputBorder.none,
-                        contentPadding: EdgeInsets.all(10),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        )),
-                  ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Container(
-                  height: 30,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: mycolorList.length,
-                    itemBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            selectedIndex = index;
-                          });
-                        },
-                        child: Container(
-                          height: 20,
-                          width: 30,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 4,
-                                color: selectedIndex == index
-                                    ? Colors.black
-                                    : Colors.transparent),
-                            color: mycolorList[index],
+                      child: Padding(
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: TextField(
+                            controller: titleController,
+                            decoration: InputDecoration(
+                                labelText: 'Title',
+                                disabledBorder: InputBorder.none,
+                                contentPadding: EdgeInsets.all(10),
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black),
+                                )),
                           ),
                         ),
-                      ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        TextField(
+                          controller: descriptionController,
+                          maxLines: 5,
+                          decoration: InputDecoration(
+                              labelText: 'Description',
+                              disabledBorder: InputBorder.none,
+                              contentPadding: EdgeInsets.all(10),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black),
+                              )),
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        TextField(
+                          controller: dateController,
+                          decoration: InputDecoration(
+                              hintText: 'Date',
+                              labelText: 'Date',
+                              disabledBorder: InputBorder.none,
+                              contentPadding: EdgeInsets.all(10),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black),
+                              )),
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Container(
+                          height: 30,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: mycolorList.length,
+                            itemBuilder: (context, index) => Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: InkWell(
+                                onTap: () {
+                                  floatSetState(() {
+                                    selectedIndex = index;
+                                  });
+                                },
+                                child: Container(
+                                  height: 20,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        width: 2,
+                                        color: selectedIndex == index
+                                            ? Colors.black
+                                            : Colors.transparent),
+                                    color: mycolorList[index],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 40,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.indigo),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('Cancel'),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.indigo),
+                              onPressed: () {
+                                noteController.addNotes(NoteModel(
+                                    title: titleController.text,
+                                    description: descriptionController.text,
+                                    date: dateController.text,
+                                    selectedColor: selectedIndex ?? 0));
+                                setState(() {});
+                                Navigator.pop(context);
+                              },
+                              child: Text('Add Note'),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
+                  )),
                 ),
-                SizedBox(
-                  height: 40,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.indigo),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text('Cancel'),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.indigo),
-                      onPressed: () {
-                        noteController.addNotes(NoteModel(
-                            title: titleController.text,
-                            description: descriptionController.text,
-                            date: dateController.text,
-                            color: selectedIndex ?? 0));
-                        setState(() {});
-                        Navigator.pop(context);
-                      },
-                      child: Text('Add Note'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          )),
-    );
+              );
+            },
+          );
+        });
   }
 }
