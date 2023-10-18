@@ -31,9 +31,30 @@ class _NoteHomeScreenState extends State<NoteHomeScreen> {
 
   //object creation for the note screen controller class
   NoteScreenController noteController = NoteScreenController();
-  
+
   //set initial idex of color as zero
-   int? selectedIndex;
+  int? selectedIndex;
+
+  DateTime? selectedDate;
+
+  Future<void> selectDate(BuildContext context) async {
+    final DateTime? selected = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2023),
+      lastDate: DateTime(2100),
+    );
+
+    setState(() {
+      selectedDate = selected;
+      // converting the selected date to string and parse to datetime format 
+      var date = DateTime.parse(selectedDate.toString());
+      // formatting the date to dd-mm-yyyy format
+      var formattedDate = "${date.day}-${date.month}-${date.year}";
+      // setting the formatted date to the date controller
+      dateController.text = formattedDate;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,15 +78,16 @@ class _NoteHomeScreenState extends State<NoteHomeScreen> {
                             detailsDate: dateController.text)));
                   },
                   child: ListContainer(
-                      listTitle: noteController.notes[index].title,
-                      listDescription: noteController.notes[index].description,
-                      listDate: noteController.notes[index].date,
-                      listColorIndex:
-                          noteController.notes[index].selectedColor!,
-                      onDeletePressed: () {
-                        noteController.deleteNotes(index);
-                        setState(() {});
-                      }, shareText: noteController.notes[index].title,),
+                    listTitle: noteController.notes[index].title,
+                    listDescription: noteController.notes[index].description,
+                    listDate: noteController.notes[index].date,
+                    listColorIndex: noteController.notes[index].selectedColor!,
+                    onDeletePressed: () {
+                      noteController.deleteNotes(index);
+                      setState(() {});
+                    },
+                    shareText: noteController.notes[index].title,
+                  ),
                 ),
             separatorBuilder: (context, index) => Divider(),
             itemCount: noteController.notes.length),
@@ -135,6 +157,11 @@ class _NoteHomeScreenState extends State<NoteHomeScreen> {
                           decoration: InputDecoration(
                               hintText: 'Date',
                               labelText: 'Date',
+                              suffixIcon: InkWell(
+                                  onTap: () {
+                                    selectDate(context);
+                                  },
+                                  child: Icon(Icons.calendar_today)),
                               disabledBorder: InputBorder.none,
                               contentPadding: EdgeInsets.all(10),
                               border: OutlineInputBorder(
